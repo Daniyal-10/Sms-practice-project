@@ -5,6 +5,7 @@ from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()
 router.register(r'role', RoleViewSet)
+router.register(r'director', DirectorViewSet)
 
 
 
