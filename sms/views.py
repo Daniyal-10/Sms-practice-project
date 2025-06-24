@@ -14,4 +14,11 @@ class RoleViewSet(viewsets.ModelViewSet):
 class DirectorViewSet(viewsets.ModelViewSet):
     queryset = Director.objects.all()
     serializer_class = DirectorSerializer
-    
+
+class DepartmentViewSet(viewsets.ModelViewSet):
+    queryset = Department.objects.all()
+    serializer_class = DepartmentSerializer
+
+class OfficeStaffViewSet(viewsets.ModelViewSet):
+    queryset = OfficeStaff.objects.all()
+    serializer_class = OfficeStaffSerializer
