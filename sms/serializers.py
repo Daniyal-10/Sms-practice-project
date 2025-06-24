@@ -66,3 +66,61 @@ class OfficeStaffSerializer(serializers.ModelSerializer):
                     return officestaff
             except Exception as e:
                 raise serializers.ValidationError({"error": str(e)})
+            
+
+
+class CountrySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Country
+        fields = "__all__"
+        
+class StateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = State
+        fields = "__all__"
+
+class CitySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = City
+        fields = "__all__"
+
+class SchoolYearSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SchoolYear
+        fields = "__all__"
+
+class TermSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Term
+        fields = "__all__"
+
+class PeriodSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Period
+        fields = "__all__"
+
+class SubjectSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Subject
+        fields = "__all__"
+
+class ClassRoomTypeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ClassRoomType
+        fields = "__all__"
+        
+class ClassRoomSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ClassRoom
+        fields = "__all__"
+
+class ClassPeriodSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ClassPeriod
+        fields = "__all__"
+
+class YearLevelSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = YearLevel
+        fields = "__all__"
+        
