@@ -67,3 +67,7 @@ class YearLevelViewSet(viewsets.ModelViewSet):
     queryset = YearLevel.objects.all()
     serializer_class = YearLevelSerializer
 
+class AdmissionViewSet(viewsets.ModelViewSet):
+    queryset = Admission.objects.all()
+    serializer_class = AdmissionSerializer    
+

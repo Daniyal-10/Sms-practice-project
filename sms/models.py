@@ -3,7 +3,7 @@ from django.contrib.auth.models import AbstractUser, PermissionsMixin
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.base_user import BaseUserManager
-
+# from student.models import *
 # Create your models here.
 
 
@@ -278,3 +278,31 @@ class YearLevel(models.Model):
         verbose_name = "Year Level"
         verbose_name_plural = "Year Levels"
         db_table = "YearLevel"        
+
+
+class Admission(models.Model):
+    student = models.ForeignKey("student.student", on_delete=models.DO_NOTHING)
+    admission_date = models.DateField(auto_now_add=True)
+    previous_school_name = models.CharField(max_length=200)
+    previous_standard_studied = models.CharField(max_length=200)
+    tc_letter = models.CharField(max_length=200)
+    guardian = models.ForeignKey("student.Guardian", on_delete=models.DO_NOTHING)
+    year_level = models.ForeignKey(YearLevel, on_delete=models.DO_NOTHING)
+    school_year = models.ForeignKey(SchoolYear, on_delete=models.DO_NOTHING)
+    emergency_contact_no = models.CharField(max_length=100)
+    entire_road_distance_from_home_to_school = models.CharField(max_length=100)
+    obtain_marks = models.FloatField()
+    total_marks = models.FloatField()
+    previous_percentage = models.FloatField(blank=True, null=True)  # Allow null/blank since auto-calculated
+
+    def save(self, *args, **kwargs):
+        if self.total_marks > 0:
+            self.previous_percentage = (self.obtain_marks / self.total_marks) * 100
+        else:
+            self.previous_percentage = 0  
+        super().save(*args, **kwargs)
+
+
+
+    class Meta:
+        db_table = "Admission"

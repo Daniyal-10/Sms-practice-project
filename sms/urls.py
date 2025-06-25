@@ -20,6 +20,7 @@ router.register(r'classroomtype',ClassRoomTypeViewSet)
 router.register(r'classroom',ClassRoomViewSet)
 router.register(r'classperiod',ClassPeriodViewSet)
 router.register(r'yearlevel',YearLevelViewSet)
+router.register(r'admission',AdmissionViewSet)
 
 
 
