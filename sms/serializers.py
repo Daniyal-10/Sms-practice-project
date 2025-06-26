@@ -257,10 +257,10 @@ class AdmissionBankingSerailizer(serializers.ModelSerializer):
 class AdmissionSerializer(serializers.ModelSerializer):
     student = AdmissonStudentSerializer()
     guardian = AdmissionGuardianSerializer()
-    guardian_type = serializers.CharField()
+    guardian_type = serializers.CharField(write_only=True)
     # address= serializers.CharField()
-    address = AdmissionAddressSerializer()
-    banking_details = AdmissionBankingSerailizer()
+    address = AdmissionAddressSerializer(write_only=True)
+    banking_details = AdmissionBankingSerailizer(write_only=True)
     class Meta:
         model = Admission
         fields = "__all__"
@@ -289,7 +289,7 @@ class AdmissionSerializer(serializers.ModelSerializer):
             #Popoing year level and school year
             year_level = validated_data.pop('year_level')
             school_year = validated_data.pop('school_year')
-
+ 
             with transaction.atomic():
                 #Creating user setting password and role then save
                 user_s = CustomUser.objects.create(**user_data_s)
@@ -306,18 +306,14 @@ class AdmissionSerializer(serializers.ModelSerializer):
                 #Now creating Guardian with the student
                 user_g= CustomUser.objects.create(**user_data_g)
                 user_g.set_password(password_g)
-                user_g.role.set([1])
-                user_g.save
-
-                # user_g.role.set(Role,2)
+                user_g.role.set([2])
+                user_g.save()          #corrected () was missing
 
                 #Creating Guardian
                 guardian = Guardian.objects.create(user = user_g,  
                                                    **guardian_data)
-                # guardian_data = guardian.pk
 
                 #Now assigning guardian in the admission
-
                 #Creating guardian type
                 guardian_type = GuardianType.objects.create(name = guardian_type)
 
