@@ -151,109 +151,7 @@ class AdmissionBankingSerailizer(serializers.ModelSerializer):
         exclude = ["user"]
 
 
-# class AdmissionSerializer(serializers.ModelSerializer):
-#     user = CustomUser()
-#     student = StudentSerializer(read_only=True)
-#     guardian = GuardianSerializer(read_only=True)
-#     guardian_type = serializers.CharField()
-
-#     class Meta:
-#         model = Admission
-#         fields = "__all__"
-
-#     def create(self, validated_data):
-#         try:
-#             #Poping for user (Student)
-#             student_data = validated_data.pop('student')
-#             user_data_s = student_data.data.pop('user')
-#             password_s = user_data_s.data.pop('password')
-
-#             #Poping for user (Guardian)
-#             guardian_data = validated_data.pop('guardian')
-#             user_data_g = guardian_data.data.pop('user')
-#             password_g = user_data_g.data.pop('password')
-            
-#             #Poping Guardian Type
-#             guardian_type = validated_data.pop('guardian_type')
-
-#             #Poping Address data
-#             address_data = validated_data.pop('address')
-
-#             #Poping Banking details
-#             banking_details_data = validated_data.pop('banking_details')
-            
-#             #Popoing year level and school year
-#             year_level = validated_data.pop('year_level')
-#             school_year = validated_data.pop('school_year')
-
-
-
-
-#             with transaction.atomic():
-#                 #Creating user setting password and role then save
-#                 user_s = CustomUser.objects.create(**user_data_s.data)
-#                 user_s.set_password(password_s)
-#                 user_s.save()
-#                 print(user_s)
-#                 # user_s.role.set(Role, 1)
-
-#                 #Now creating student with the user
-#                 student = Student.objects.create(user = user_s, **student_data)
-#                 print(student)
-                
-#                 #assigning student pk in the admission
-#                 validated_data["student"] = student.pk
-                
-
-
-#                 #Now creating Guardian with the student
-#                 user_g= CustomUser.objects.create(**user_data_g)
-#                 user_g.set_password(password_g)
-#                 user_g.save
-
-#                 # user_g.role.set(Role,2)
-
-#                 #Creating Guardian
-#                 guardian = Guardian.objects.create(user = user_g, student = student, **guardian_data)
-#                 guardian_data = guardian.pk
-
-#                 #Now assigning guardian in the admission
-
-#                 #Creating guardian type
-#                 guardian_type = GuardianType.objects.create(**guardian_type)
-
-#                 #Creating studentGuardian 
-#                 StudentGuardian.objects.create(student = student,
-#                                                 guardian = guardian,
-#                                                 guardian_type = guardian_type)
-                
-#                 #Creating StudentYear Level by assinging the year and the level
-#                 StudentYearLevel.objects.create(student = student, year_level = year_level, school_year = school_year)
-
-#                 #Creating Address 
-#                 address = Address.objects.create(user = user_s, **address_data)
-
-#                 #Adding Banking details
-#                 banking_details = BankingDetails.objects.create(user = user_s, **banking_details_data)
-
-#                 #Now Creating Admission
-#                 admission = Admission.objects.create(student = student,
-#                                                      guardian = guardian, 
-#                                                      guardian_type = guardian_type,
-#                                                      address = address,
-#                                                      banking_details = banking_details,
-#                                                      **validated_data)
-                
-#                 return admission
-#         except Exception as e:
-#             raise serializers.ValidationError({"error": str(e)})
-
-
-#         return 
-
-
-
-
+# Admission Serializer (CRUD in serializer)
 class AdmissionSerializer(serializers.ModelSerializer):
     student = AdmissonStudentSerializer()
     guardian = AdmissionGuardianSerializer()
@@ -294,10 +192,10 @@ class AdmissionSerializer(serializers.ModelSerializer):
                 #Creating user setting password and role then save
                 user_s = CustomUser.objects.create(**user_data_s)
                 user_s.set_password(password_s)
-                user_s.role.set([1]) 
+                s = Role.objects.get(name__iexact ="Student")
+                user_s.role.set([s]) 
                 user_s.save()
                 print(user_s)
-                # user_s.role.set(Role, 1)
 
                 #Now creating student with the user
                 student = Student.objects.create(user = user_s, **student_data)
@@ -306,7 +204,8 @@ class AdmissionSerializer(serializers.ModelSerializer):
                 #Now creating Guardian with the student
                 user_g= CustomUser.objects.create(**user_data_g)
                 user_g.set_password(password_g)
-                user_g.role.set([2])
+                g = Role.objects.get(name__iexact ="Guardian")
+                user_g.role.set([g])
                 user_g.save()          #corrected () was missing
 
                 #Creating Guardian
