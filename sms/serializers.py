@@ -17,7 +17,8 @@ class CustomUserSerializer(serializers.ModelSerializer):
 class AdmissionCustomUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ['id', 'email', 'first_name', 'middle_name', 'last_name','password']        
+        fields = ['id', 'email', 'first_name', 'middle_name', 'last_name']        
+    
 
 class DirectorSerializer(serializers.ModelSerializer):
     user_id = CustomUserSerializer()
@@ -199,7 +200,6 @@ class AdmissionSerializer(serializers.ModelSerializer):
 
                 #Now creating student with the user
                 student = Student.objects.create(user = user_s, **student_data)
-                print(student)
                 
                 #Now creating Guardian with the student
                 user_g= CustomUser.objects.create(**user_data_g)
@@ -247,6 +247,52 @@ class AdmissionSerializer(serializers.ModelSerializer):
                 return admission
         except Exception as e:
             raise serializers.ValidationError({"error": str(e)})
-
-
         return 
+    
+
+class AdmissionUpdateSerializer(serializers.ModelSerializer):
+    student = AdmissonStudentSerializer(required=False)
+    guardian = AdmissionGuardianSerializer(required=False)
+
+    class Meta:
+        model = Admission
+        fields = '__all__'
+    
+    def update(self, instance, validated_data):
+        #Poping for the student and the student user
+        student_data = validated_data.pop("student", None)
+        # Poping for the guardian and the guardian user
+
+        # initialise to avoid UnboundLocalError
+        student_user  = None
+        guardian_user = None
+
+        guardian_data = validated_data.pop("guardian", None)
+        if student_data:
+            student_user = student_data.pop("user", None)
+            ser = AdmissonStudentSerializer(instance.student, data=student_data, partial=True)
+            ser.is_valid(raise_exception=True)
+            ser.save()
+
+        if student_user:
+            ser = AdmissionCustomUserSerializer(instance.student.user, data=student_user, partial=True)
+            ser.is_valid(raise_exception=True)
+            ser.save()
+
+        if guardian_data:
+            guardian_user = guardian_data.pop("user", None)
+            ser = AdmissionGuardianSerializer(instance.guardian, data=guardian_data, partial=True)
+            ser.is_valid(raise_exception=True)
+            ser.save()
+
+        if guardian_user:
+            ser = AdmissionCustomUserSerializer(instance.guardian.user, data=guardian_user, partial=True)   
+            ser.is_valid(raise_exception=True)
+            ser.save()
+
+        # for attr, value in validated_data.items():
+        #     setattr(instance, attr, value)
+
+        instance.save()
+        return instance    
+        

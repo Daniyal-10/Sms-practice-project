@@ -71,3 +71,10 @@ class AdmissionViewSet(viewsets.ModelViewSet):
     queryset = Admission.objects.all()
     serializer_class = AdmissionSerializer    
 
+class AdmissionUpdateViewSet(viewsets.ModelViewSet):
+    queryset = Admission.objects.all()
+    serializer_class = AdmissionUpdateSerializer    
+
+
+
+
