@@ -146,6 +146,11 @@ class AdmissionAddressSerializer(serializers.ModelSerializer):
         model = Address
         exclude = ["user"]
 
+class AdmissionUUAddressSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Address
+        fields = "__all__"
+
 class AdmissionBankingSerailizer(serializers.ModelSerializer):
     class Meta:
         model = BankingDetails
@@ -253,21 +258,24 @@ class AdmissionSerializer(serializers.ModelSerializer):
 class AdmissionUpdateSerializer(serializers.ModelSerializer):
     student = AdmissonStudentSerializer(required=False)
     guardian = AdmissionGuardianSerializer(required=False)
+    address = AdmissionUUAddressSerializer(write_only=True)
 
     class Meta:
         model = Admission
         fields = '__all__'
     
     def update(self, instance, validated_data):
-        #Poping for the student and the student user
+        #Poping for the student 
         student_data = validated_data.pop("student", None)
-        # Poping for the guardian and the guardian user
+        # Poping for the guardian 
+        guardian_data = validated_data.pop("guardian", None)
+        # Poping for the address 
+        address_data = validated_data.pop("address", None)
 
         # initialise to avoid UnboundLocalError
         student_user  = None
         guardian_user = None
 
-        guardian_data = validated_data.pop("guardian", None)
         if student_data:
             student_user = student_data.pop("user", None)
             ser = AdmissonStudentSerializer(instance.student, data=student_data, partial=True)
@@ -287,6 +295,16 @@ class AdmissionUpdateSerializer(serializers.ModelSerializer):
 
         if guardian_user:
             ser = AdmissionCustomUserSerializer(instance.guardian.user, data=guardian_user, partial=True)   
+            ser.is_valid(raise_exception=True)
+            ser.save()
+
+        if address_data:
+            # address_obj = instance.student.user.addressuser.first()
+            # if address_obj is None:
+            #      # create a new one if the user had none
+            #     address_obj = Address(user=instance.student.user)
+
+            ser = AdmissionUUAddressSerializer(instance.student.user.addressuser.first(), data=address_data, partial=True)
             ser.is_valid(raise_exception=True)
             ser.save()
 

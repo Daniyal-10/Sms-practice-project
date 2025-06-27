@@ -129,7 +129,7 @@ class City(models.Model):
 
 
 class Address(models.Model):
-    user = models.ForeignKey(CustomUser,on_delete=models.DO_NOTHING)
+    user = models.ForeignKey(CustomUser,on_delete=models.DO_NOTHING, related_name='addressuser')
     house_no = models.IntegerField(null=True, blank=True)
     habitation = models.CharField(max_length=100,null=True,blank=True)
     ward_no = models.IntegerField(null=True,blank=True)
